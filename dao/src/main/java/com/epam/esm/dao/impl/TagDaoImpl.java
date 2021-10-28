@@ -39,7 +39,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(Long id) {
         Tag tag = entityManager.find(Tag.class, id);
         if(tag == null){
             return false;
@@ -62,7 +62,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Optional<Tag> loadById(int id) {
+    public Optional<Tag> loadById(Long id) {
         Tag tag = entityManager.find(Tag.class, id);
         if(tag == null){
             return Optional.empty();

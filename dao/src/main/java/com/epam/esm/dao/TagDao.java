@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface TagDao {
     List<Tag> loadAll();
     Optional<Tag> loadByName(String name);
-    Optional<Tag> loadById(int id);
+    Optional<Tag> loadById(Long id);
     Tag create(String name);
-    boolean delete(int id);
+    boolean delete(Long id);
 }
