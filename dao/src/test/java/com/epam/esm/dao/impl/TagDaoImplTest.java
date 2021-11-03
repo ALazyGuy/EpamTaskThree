@@ -1,5 +1,6 @@
-package test.com.epam.esm.dao.impl;
+package com.epam.esm.dao.impl;
 
+import com.epam.esm.configuration.DaoTestConfiguration;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.entity.Tag;
 import org.junit.jupiter.api.Test;
@@ -8,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import test.com.epam.esm.configuration.DaoTestConfiguration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
