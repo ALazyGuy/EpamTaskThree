@@ -3,6 +3,7 @@ package com.epam.esm.model.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -12,14 +13,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Certificate> certificates;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Order> orders = new LinkedList<>();
 
-    public void addCertificate(Certificate certificate){
-        certificates.add(certificate);
+    public void addOrder(Order order){
+        orders.add(order);
     }
 
-    public void removeCertificate(Certificate certificate){
-        certificates.remove(certificate);
+    public void removeOrder(Order order){
+        orders.remove(order);
     }
 }

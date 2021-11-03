@@ -24,7 +24,7 @@ public class Certificate {
     private int duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Tag> tags = new LinkedList<>();
 
     public void addTag(Tag tag){
