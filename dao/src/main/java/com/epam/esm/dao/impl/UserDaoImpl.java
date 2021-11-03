@@ -19,12 +19,16 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User save(User user) {
-        Optional<User> current = findByUsername(user.getUsername());
-        if(current.isPresent()){
-            user.setId(current.get().getId());
-            user = entityManager.merge(user);
-            entityManager.detach(user);
-            return user;
+        if(user.getId() != null) {
+            Optional<User> current = findById(user.getId());
+            if (current.isPresent()) {
+                User existing = current.get();
+                existing.setUsername(user.getUsername());
+                existing.setCertificates(user.getCertificates());
+                entityManager.merge(existing);
+                entityManager.detach(existing);
+                return existing;
+            }
         }
         entityManager.persist(user);
         entityManager.flush();
