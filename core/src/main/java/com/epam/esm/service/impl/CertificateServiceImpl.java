@@ -3,8 +3,8 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.dto.CertificateCreateRequest;
-import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.CertificateEntity;
+import com.epam.esm.model.entity.TagEntity;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,20 +26,20 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Optional<Certificate> create(CertificateCreateRequest certificateCreateRequest) {
-        Certificate certificate = Certificate.builder()
+    public Optional<CertificateEntity> create(CertificateCreateRequest certificateCreateRequest) {
+        CertificateEntity certificateEntity = CertificateEntity.builder()
                 .name(certificateCreateRequest.getName())
                 .description(certificateCreateRequest.getDescription())
                 .price(certificateCreateRequest.getPrice())
                 .duration(certificateCreateRequest.getDuration())
                 .build();
 
-        List<Tag> tags = certificateCreateRequest.getTags()
+        List<TagEntity> tagEntities = certificateCreateRequest.getTags()
                 .stream()
                 .map(tagDao::create)
                 .collect(Collectors.toList());
-        certificate.setTags(tags);
-        return certificateDao.create(certificate);
+        certificateEntity.setTagEntities(tagEntities);
+        return certificateDao.create(certificateEntity);
     }
 
     @Override
@@ -48,12 +48,12 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> getAllCertificates() {
+    public List<CertificateEntity> getAllCertificates() {
         return certificateDao.loadAll();
     }
 
     @Override
-    public Optional<Certificate> getById(Long id) {
+    public Optional<CertificateEntity> getById(Long id) {
         return certificateDao.loadById(id);
     }
 }

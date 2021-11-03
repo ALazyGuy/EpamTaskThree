@@ -2,7 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.DaoTestConfiguration;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.TagEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class TagDaoImplTest {
     @Test
     public void createTest(){
         tagDao.create("TEST");
-        Tag test = entityManager.createQuery("SELECT tag FROM Tag tag WHERE tag.name = ?1", Tag.class)
+        TagEntity test = entityManager.createQuery("SELECT tag FROM TagEntity tag WHERE tag.name = ?1", TagEntity.class)
                 .setParameter(1, "TEST")
                 .getSingleResult();
         assertEquals("TEST", test.getName());
@@ -40,10 +40,10 @@ public class TagDaoImplTest {
 
     @Test
     public void loadByNameTest(){
-        Tag expected = new Tag();
+        TagEntity expected = new TagEntity();
         expected.setName("TEST");
         entityManager.persist(expected);
-        Optional<Tag> actual = tagDao.loadByName("TEST");
+        Optional<TagEntity> actual = tagDao.loadByName("TEST");
         assertTrue(actual.isPresent());
         assertEquals("TEST", actual.get().getName());
     }
@@ -54,27 +54,27 @@ public class TagDaoImplTest {
             tagDao.create(String.format("Tag%d", d + 1));
         }
 
-        List<Tag> tags = tagDao.loadAll();
-        assertEquals(10, tags.size());
+        List<TagEntity> tagEntities = tagDao.loadAll();
+        assertEquals(10, tagEntities.size());
     }
 
     @Test
     public void loadByIdTest(){
-        Tag expected = new Tag();
+        TagEntity expected = new TagEntity();
         expected.setName("TEST");
         entityManager.persist(expected);
-        Optional<Tag> actual = tagDao.loadById(1L);
+        Optional<TagEntity> actual = tagDao.loadById(1L);
         assertTrue(actual.isPresent());
         assertEquals(1, actual.get().getId());
     }
 
     @Test
     public void deleteTest(){
-        Tag expected = new Tag();
+        TagEntity expected = new TagEntity();
         expected.setName("TEST");
         entityManager.persist(expected);
         tagDao.delete(1L);
-        Optional<Tag> actual = tagDao.loadById(1L);
+        Optional<TagEntity> actual = tagDao.loadById(1L);
         assertTrue(actual.isEmpty());
     }
 

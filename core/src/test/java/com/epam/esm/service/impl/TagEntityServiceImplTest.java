@@ -2,7 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.configuration.ServiceTestConfiguration;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.TagEntity;
 import com.epam.esm.service.TagService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ServiceTestConfiguration.class)
-public class TagServiceImplTest {
+public class TagEntityServiceImplTest {
 
     @Autowired
     private TagService tagService;
@@ -35,7 +35,7 @@ public class TagServiceImplTest {
     @Test
     public void createTest(){
         tagService.create("TEST");
-        Optional<Tag> tag = tagDao.loadByName("TEST");
+        Optional<TagEntity> tag = tagDao.loadByName("TEST");
         assertTrue(tag.isPresent());
     }
 

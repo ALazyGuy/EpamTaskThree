@@ -2,7 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.DaoTestConfiguration;
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.model.entity.Certificate;
+import com.epam.esm.model.entity.CertificateEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,31 +29,31 @@ public class CertificateDaoImplTest {
 
     @Test
     public void createTest(){
-        Certificate certificate = new Certificate();
-        certificate.setName("Certificate1");
-        certificateDao.create(certificate);
-        Certificate certificate1 = entityManager.createQuery("SELECT cert FROM Certificate cert WHERE cert.name = ?1", Certificate.class)
+        CertificateEntity certificateEntity = new CertificateEntity();
+        certificateEntity.setName("Certificate1");
+        certificateDao.create(certificateEntity);
+        CertificateEntity certificateEntity1 = entityManager.createQuery("SELECT cert FROM CertificateEntity cert WHERE cert.name = ?1", CertificateEntity.class)
                 .setParameter(1, "Certificate1")
                 .getSingleResult();
-        assertNotNull(certificate1);
+        assertNotNull(certificateEntity1);
     }
 
     @Test
     public void loadByNameTest(){
-        Certificate certificate = new Certificate();
-        certificate.setName("Certificate1");
-        entityManager.persist(certificate);
-        Optional<Certificate> certificate1 = certificateDao.loadByName("Certificate1");
+        CertificateEntity certificateEntity = new CertificateEntity();
+        certificateEntity.setName("Certificate1");
+        entityManager.persist(certificateEntity);
+        Optional<CertificateEntity> certificate1 = certificateDao.loadByName("Certificate1");
         assertTrue(certificate1.isPresent());
         assertEquals("Certificate1", certificate1.get().getName());
     }
 
     @Test
     public void loadByIdTest(){
-        Certificate certificate = new Certificate();
-        certificate.setName("Certificate1");
-        entityManager.persist(certificate);
-        Optional<Certificate> certificate1 = certificateDao.loadById(1L);
+        CertificateEntity certificateEntity = new CertificateEntity();
+        certificateEntity.setName("Certificate1");
+        entityManager.persist(certificateEntity);
+        Optional<CertificateEntity> certificate1 = certificateDao.loadById(1L);
         assertTrue(certificate1.isPresent());
         assertEquals(1L, certificate1.get().getId());
     }
@@ -61,22 +61,22 @@ public class CertificateDaoImplTest {
     @Test
     public void loadAllTest(){
         for(int d = 0; d < 10; d++){
-            Certificate certificate = new Certificate();
-            certificate.setName(Integer.toString(d));
-            certificateDao.create(certificate);
+            CertificateEntity certificateEntity = new CertificateEntity();
+            certificateEntity.setName(Integer.toString(d));
+            certificateDao.create(certificateEntity);
         }
 
-        List<Certificate> certificates = certificateDao.loadAll();
-        assertEquals(10, certificates.size());
+        List<CertificateEntity> certificateEntities = certificateDao.loadAll();
+        assertEquals(10, certificateEntities.size());
     }
 
     @Test
     public void deleteTest(){
-        Certificate certificate = new Certificate();
-        certificate.setName("Certificate1");
-        entityManager.persist(certificate);
+        CertificateEntity certificateEntity = new CertificateEntity();
+        certificateEntity.setName("Certificate1");
+        entityManager.persist(certificateEntity);
         certificateDao.delete(1L);
-        Optional<Certificate> certificate1 = certificateDao.loadById(1L);
+        Optional<CertificateEntity> certificate1 = certificateDao.loadById(1L);
         assertTrue(certificate1.isEmpty());
     }
 

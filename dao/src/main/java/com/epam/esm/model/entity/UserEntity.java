@@ -8,19 +8,19 @@ import java.util.List;
 
 @Entity
 @Data
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Order> orders = new LinkedList<>();
+    private List<OrderEntity> orderEntities = new LinkedList<>();
 
-    public void addOrder(Order order){
-        orders.add(order);
+    public void addOrder(OrderEntity orderEntity){
+        orderEntities.add(orderEntity);
     }
 
-    public void removeOrder(Order order){
-        orders.remove(order);
+    public void removeOrder(OrderEntity orderEntity){
+        orderEntities.remove(orderEntity);
     }
 }

@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.TagEntity;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> getAll() {
+    public List<TagEntity> getAll() {
         return tagDao.loadAll();
     }
 
     @Override
-    public Tag create(String name) {
+    public TagEntity create(String name) {
         return tagDao.create(name);
     }
 }

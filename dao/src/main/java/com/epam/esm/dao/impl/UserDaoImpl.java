@@ -1,7 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.model.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,57 +18,57 @@ public class UserDaoImpl implements UserDao {
     private EntityManager entityManager;
 
     @Override
-    public User save(User user) {
-        if(user.getId() != null) {
-            Optional<User> current = findById(user.getId());
+    public UserEntity save(UserEntity userEntity) {
+        if(userEntity.getId() != null) {
+            Optional<UserEntity> current = findById(userEntity.getId());
             if (current.isPresent()) {
-                User existing = current.get();
-                existing.setUsername(user.getUsername());
-                existing.setCertificates(user.getCertificates());
+                UserEntity existing = current.get();
+                existing.setUsername(userEntity.getUsername());
+                existing.setOrderEntities(userEntity.getOrderEntities());
                 entityManager.merge(existing);
                 entityManager.detach(existing);
                 return existing;
             }
         }
-        entityManager.persist(user);
+        entityManager.persist(userEntity);
         entityManager.flush();
-        entityManager.detach(user);
-        return user;
+        entityManager.detach(userEntity);
+        return userEntity;
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        User user = entityManager.find(User.class, id);
-        if(user == null){
+    public Optional<UserEntity> findById(Long id) {
+        UserEntity userEntity = entityManager.find(UserEntity.class, id);
+        if(userEntity == null){
             return Optional.empty();
         }
 
-        entityManager.detach(user);
-        return Optional.of(user);
+        entityManager.detach(userEntity);
+        return Optional.of(userEntity);
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        List<User> users = entityManager
-                .createQuery("SELECT user FROM User user WHERE user.username = ?1")
+    public Optional<UserEntity> findByUsername(String username) {
+        List<UserEntity> userEntities = entityManager
+                .createQuery("SELECT user FROM UserEntity user WHERE user.username = ?1")
                 .setParameter(1, username)
                 .getResultList();
-        if(users.size() == 0){
+        if(userEntities.size() == 0){
             return Optional.empty();
         }
-        User user = users.get(0);
-        entityManager.detach(user);
-        return Optional.of(user);
+        UserEntity userEntity = userEntities.get(0);
+        entityManager.detach(userEntity);
+        return Optional.of(userEntity);
     }
 
     @Override
     public boolean delete(Long id) {
-        User user = entityManager.find(User.class, id);
-        if(user == null){
+        UserEntity userEntity = entityManager.find(UserEntity.class, id);
+        if(userEntity == null){
             return false;
         }
 
-        entityManager.remove(user);
+        entityManager.remove(userEntity);
         return true;
     }
 }

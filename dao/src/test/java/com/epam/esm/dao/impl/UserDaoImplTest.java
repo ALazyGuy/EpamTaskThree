@@ -2,7 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.DaoTestConfiguration;
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.model.entity.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +29,10 @@ public class UserDaoImplTest {
 
     @Test
     public void saveNewTest(){
-        User user = new User();
-        user.setUsername("TEST");
-        userDao.save(user);
-        User test = entityManager.createQuery("SELECT user FROM User user WHERE user.username = ?1", User.class)
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("TEST");
+        userDao.save(userEntity);
+        UserEntity test = entityManager.createQuery("SELECT user FROM UserEntity user WHERE user.username = ?1", UserEntity.class)
                 .setParameter(1, "TEST")
                 .getSingleResult();
         assertEquals(1, test.getId());
@@ -40,50 +40,50 @@ public class UserDaoImplTest {
 
     @Test
     public void saveExistingTest(){
-        User user = new User();
-        user.setUsername("TEST1");
-        userDao.save(user);
-        user.setUsername("NEWNAME");
-        userDao.save(user);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("TEST1");
+        userDao.save(userEntity);
+        userEntity.setUsername("NEWNAME");
+        userDao.save(userEntity);
         assertThrows(NoResultException.class, () -> {
-            entityManager.createQuery("SELECT user FROM User user WHERE user.username = ?1", User.class)
+            entityManager.createQuery("SELECT user FROM UserEntity user WHERE user.username = ?1", UserEntity.class)
                     .setParameter(1, "TEST1")
                     .getSingleResult();
         });
-        User actual = entityManager.createQuery("SELECT user FROM User user WHERE user.username = ?1", User.class)
+        UserEntity actual = entityManager.createQuery("SELECT user FROM UserEntity user WHERE user.username = ?1", UserEntity.class)
                 .setParameter(1, "NEWNAME")
                 .getSingleResult();
-        assertEquals(user.getId(), actual.getId());
+        assertEquals(userEntity.getId(), actual.getId());
     }
 
     @Test
     public void findByIdTest(){
-        User user = new User();
-        user.setUsername("TEST");
-        userDao.save(user);
-        Optional<User> actual = userDao.findById(user.getId());
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("TEST");
+        userDao.save(userEntity);
+        Optional<UserEntity> actual = userDao.findById(userEntity.getId());
         assertTrue(actual.isPresent());
-        assertEquals(user.getUsername(), actual.get().getUsername());
+        assertEquals(userEntity.getUsername(), actual.get().getUsername());
     }
 
     @Test
     public void findByUsernameTest(){
-        User user = new User();
-        user.setUsername("TEST2");
-        userDao.save(user);
-        Optional<User> actual = userDao.findByUsername(user.getUsername());
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("TEST2");
+        userDao.save(userEntity);
+        Optional<UserEntity> actual = userDao.findByUsername(userEntity.getUsername());
         assertTrue(actual.isPresent());
-        assertEquals(user.getUsername(), actual.get().getUsername());
+        assertEquals(userEntity.getUsername(), actual.get().getUsername());
     }
 
     @Test
     public void deleteTest(){
         assertFalse(userDao.delete(100L));
-        User user = new User();
-        user.setUsername("TEST2");
-        userDao.save(user);
-        userDao.delete(user.getId());
-        Optional<User> actual = userDao.findById(user.getId());
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("TEST2");
+        userDao.save(userEntity);
+        userDao.delete(userEntity.getId());
+        Optional<UserEntity> actual = userDao.findById(userEntity.getId());
         assertTrue(actual.isEmpty());
     }
 

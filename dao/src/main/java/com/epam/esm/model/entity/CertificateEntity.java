@@ -1,5 +1,6 @@
 package com.epam.esm.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ import java.util.List;
 @Entity
 @Builder
 @NoArgsConstructor
-public class Certificate {
+@AllArgsConstructor
+public class CertificateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +27,15 @@ public class Certificate {
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Tag> tags = new LinkedList<>();
+    private List<TagEntity> tagEntities = new LinkedList<>();
 
-    public void addTag(Tag tag){
-        if(tags.stream().noneMatch(t -> t.getId() == tag.getId())){
-            this.tags.add(tag);
+    public void addTag(TagEntity tagEntity){
+        if(tagEntities.stream().noneMatch(t -> t.getId() == tagEntity.getId())){
+            this.tagEntities.add(tagEntity);
         }
     }
 
-    public void removeTag(Tag tag){
-        this.tags.remove(tag);
+    public void removeTag(TagEntity tagEntity){
+        this.tagEntities.remove(tagEntity);
     }
 }
