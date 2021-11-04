@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ServiceTestConfiguration.class)
-public class TagEntityServiceImplTest {
+public class TagServiceImplTest {
 
     @Autowired
     private TagService tagService;
