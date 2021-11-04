@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Service
 public interface CertificateService {
-    Optional<CertificateEntity> create(CertificateCreateRequest certificateCreateRequest);
+    CertificateEntity create(CertificateCreateRequest certificateCreateRequest);
     boolean delete(Long id);
     Optional<CertificateEntity> getById(Long id);
     List<CertificateEntity> getAllCertificates();

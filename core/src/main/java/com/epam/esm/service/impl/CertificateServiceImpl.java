@@ -9,6 +9,7 @@ import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,12 +27,13 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Optional<CertificateEntity> create(CertificateCreateRequest certificateCreateRequest) {
+    public CertificateEntity create(CertificateCreateRequest certificateCreateRequest) {
         CertificateEntity certificateEntity = CertificateEntity.builder()
                 .name(certificateCreateRequest.getName())
                 .description(certificateCreateRequest.getDescription())
                 .price(certificateCreateRequest.getPrice())
                 .duration(certificateCreateRequest.getDuration())
+                .createDate(LocalDateTime.now())
                 .build();
 
         List<TagEntity> tagEntities = certificateCreateRequest.getTags()

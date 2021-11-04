@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface CertificateDao {
     List<CertificateEntity> loadAll();
-    Optional<CertificateEntity> create(CertificateEntity certificateEntity);
+    CertificateEntity create(CertificateEntity certificateEntity);
     Optional<CertificateEntity> loadById(Long id);
     Optional<CertificateEntity> loadByName(String name);
     // List<Certificate> search(SQLQueryParamBuilder.SQLQueryParamState sqlQueryParamState);

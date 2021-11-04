@@ -50,17 +50,17 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public Optional<CertificateEntity> create(CertificateEntity certificateEntity) {
+    public CertificateEntity create(CertificateEntity certificateEntity) {
         Optional<CertificateEntity> certificate1 = loadByName(certificateEntity.getName());
         if(certificate1.isPresent()){
             entityManager.detach(certificate1.get());
-            return certificate1;
+            return certificate1.get();
         }
         certificateEntity.getTagEntities().forEach(t -> tagDao.create(t.getName()));
         entityManager.persist(certificateEntity);
         entityManager.flush();
         entityManager.detach(certificateEntity);
-        return Optional.of(certificateEntity);
+        return certificateEntity;
     }
 
     @Override
