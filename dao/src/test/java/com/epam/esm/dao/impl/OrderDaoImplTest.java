@@ -28,7 +28,7 @@ public class OrderDaoImplTest {
     private OrderDao orderDao;
 
     @Test
-    public void test(){
+    public void createTest(){
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setPurchaseDate(LocalDateTime.now());
         orderDao.create(orderEntity);
