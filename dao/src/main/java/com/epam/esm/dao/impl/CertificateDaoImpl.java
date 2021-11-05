@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -65,4 +66,10 @@ public class CertificateDaoImpl implements CertificateDao {
         entityManager.remove(certificateEntity);
         return true;
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return Objects.nonNull(entityManager.find(CertificateEntity.class, id));
+    }
+
 }
