@@ -21,7 +21,10 @@ public class OrderEntity {
     private Long id;
     private double summary;
     private LocalDateTime purchaseDate;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToOne
+    private UserEntity owner;
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<CertificateEntity> certificateEntities = new LinkedList<>();
 
     public void addCertificate(CertificateEntity certificateEntity){

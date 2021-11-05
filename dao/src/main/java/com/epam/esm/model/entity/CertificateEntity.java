@@ -26,6 +26,7 @@ public class CertificateEntity {
     private int duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
+    @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
     private List<TagEntity> tagEntities = new LinkedList<>();
 
