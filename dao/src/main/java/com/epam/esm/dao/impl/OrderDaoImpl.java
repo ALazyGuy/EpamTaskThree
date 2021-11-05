@@ -26,9 +26,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public OrderEntity create(OrderEntity orderEntity) {
-        orderEntity.getCertificateEntities().forEach(certificateDao::create);
         entityManager.persist(orderEntity);
-        entityManager.detach(orderEntity);
         return orderEntity;
     }
 
