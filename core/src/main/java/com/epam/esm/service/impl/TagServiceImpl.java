@@ -29,5 +29,8 @@ public class TagServiceImpl implements TagService {
         return tagDao.create(tagCreateRequest.getName());
     }
 
-
+    @Override
+    public boolean delete(Long id) {
+        return tagDao.delete(id);
+    }
 }

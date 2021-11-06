@@ -11,4 +11,5 @@ import java.util.List;
 public interface TagService {
     List<TagEntity> getAll();
     TagEntity create(TagCreateRequest tagCreateRequest);
+    boolean delete(Long id);
 }
