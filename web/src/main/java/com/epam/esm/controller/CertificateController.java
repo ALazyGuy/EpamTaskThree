@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*", methods = {RequestMethod.POST})
+@CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE})
 @RequestMapping("/v2/certificate")
 public class CertificateController {
 
@@ -27,6 +27,14 @@ public class CertificateController {
     public ResponseEntity<CertificateResponse> create(@Valid @RequestBody CertificateCreateRequest certificateCreateRequest){
         CertificateResponse response = new CertificateResponse(certificateService.create(certificateCreateRequest));
         return ResponseEntity.status(201).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id){
+        if(certificateService.delete(id)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
