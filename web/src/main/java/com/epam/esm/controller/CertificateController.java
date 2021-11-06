@@ -10,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE, RequestMethod.GET})
 @RequestMapping("/v2/certificate")
 public class CertificateController {
 
@@ -33,6 +34,15 @@ public class CertificateController {
     public ResponseEntity delete(@PathVariable Long id){
         if(certificateService.delete(id)){
             return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CertificateResponse> getById(@PathVariable Long id){
+        Optional<CertificateEntity> response = certificateService.getById(id);
+        if(response.isPresent()){
+            return ResponseEntity.ok(response.map(CertificateResponse::new).get());
         }
         return ResponseEntity.notFound().build();
     }
