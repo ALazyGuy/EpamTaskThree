@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.exception.TagExistsException;
 import com.epam.esm.model.entity.TagEntity;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +22,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public TagEntity create(String name){
+    public TagEntity createIfNotExists(String name){
         int count = countByName(name);
 
         if(count != 0) {
@@ -30,6 +31,14 @@ public class TagDaoImpl implements TagDao {
 
         TagEntity tagEntity = new TagEntity();
         tagEntity.setName(name);
+        return create(tagEntity);
+    }
+
+    @Override
+    public TagEntity create(TagEntity tagEntity){
+        if(tagEntity.getId() != null){
+            throw new TagExistsException(tagEntity.getName());
+        }
         this.entityManager.persist(tagEntity);
         return tagEntity;
     }

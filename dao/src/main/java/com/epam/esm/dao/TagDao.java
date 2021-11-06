@@ -11,6 +11,7 @@ public interface TagDao {
     List<TagEntity> loadAll();
     Optional<TagEntity> loadByName(String name);
     Optional<TagEntity> loadById(Long id);
-    TagEntity create(String name);
+    TagEntity create(TagEntity tagEntity);
+    TagEntity createIfNotExists(String name);
     boolean delete(Long id);
 }

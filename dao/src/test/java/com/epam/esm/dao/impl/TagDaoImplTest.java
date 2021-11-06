@@ -31,7 +31,7 @@ public class TagDaoImplTest {
 
     @Test
     public void createTest(){
-        tagDao.create("TEST");
+        tagDao.create(TagEntity.builder().name("TEST").build());
         TagEntity test = entityManager.createQuery("SELECT tag FROM TagEntity tag WHERE tag.name = ?1", TagEntity.class)
                 .setParameter(1, "TEST")
                 .getSingleResult();
@@ -51,7 +51,7 @@ public class TagDaoImplTest {
     @Test
     public void loadAllTest(){
         for(int d = 0; d < 10; d++){
-            tagDao.create(String.format("Tag%d", d + 1));
+            tagDao.create(TagEntity.builder().name(String.format("Tag%d", d + 1)).build());
         }
 
         List<TagEntity> tagEntities = tagDao.loadAll();

@@ -38,7 +38,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         List<TagEntity> tagEntities = certificateCreateRequest.getTags()
                 .stream()
-                .map(tagDao::create)
+                .map(tagDao::createIfNotExists)
                 .collect(Collectors.toList());
         certificateEntity.setTagEntities(tagEntities);
         return certificateDao.create(certificateEntity);

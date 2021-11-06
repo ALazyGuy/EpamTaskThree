@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.configuration.ServiceTestConfiguration;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.model.dto.TagCreateRequest;
 import com.epam.esm.model.entity.TagEntity;
 import com.epam.esm.service.TagService;
 import org.junit.jupiter.api.Test;
@@ -29,14 +30,16 @@ public class TagServiceImplTest {
     @Test
     public void getAllTest(){
         for(int d = 0; d < 10; d++){
-            tagDao.create(String.format("Tag%d", d));
+            tagDao.create(TagEntity.builder().name(String.format("Tag%d", d)).build());
         }
         assertEquals(10, tagService.getAll().size());
     }
 
     @Test
     public void createTest(){
-        tagService.create("TEST");
+        TagCreateRequest tagCreateRequest = new TagCreateRequest();
+        tagCreateRequest.setName("TEST");
+        tagService.create(tagCreateRequest);
         Optional<TagEntity> tag = tagDao.loadByName("TEST");
         assertTrue(tag.isPresent());
     }

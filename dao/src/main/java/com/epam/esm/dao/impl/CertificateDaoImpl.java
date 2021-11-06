@@ -47,7 +47,7 @@ public class CertificateDaoImpl implements CertificateDao {
         if(certificate1.isPresent()){
             return certificate1.get();
         }
-        certificateEntity.getTagEntities().forEach(t -> tagDao.create(t.getName()));
+        certificateEntity.getTagEntities().forEach(t -> tagDao.createIfNotExists(t.getName()));
         entityManager.persist(certificateEntity);
         return certificateEntity;
     }
