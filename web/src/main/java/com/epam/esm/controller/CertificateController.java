@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*", methods = {})
+@CrossOrigin(origins = "*", methods = {RequestMethod.POST})
 @RequestMapping("/v2/certificate")
 public class CertificateController {
 
