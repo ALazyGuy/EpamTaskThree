@@ -1,35 +1,28 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.exception.NoUserFoundException;
 import com.epam.esm.exception.UserAlreadyExistsException;
+import com.epam.esm.model.dto.OrderCreateRequest;
 import com.epam.esm.model.dto.UserCreateRequest;
-import com.epam.esm.model.entity.CertificateEntity;
-import com.epam.esm.model.entity.OrderEntity;
 import com.epam.esm.model.entity.UserEntity;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
-    private final OrderDao orderDao;
     private final CertificateService certificateService;
+    private final OrderService orderService;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, CertificateService certificateService,  OrderDao orderDao) {
+    public UserServiceImpl(UserDao userDao, CertificateService certificateService, OrderService orderService) {
         this.userDao = userDao;
-        this.orderDao = orderDao;
+        this.orderService = orderService;
         this.certificateService = certificateService;
     }
 
@@ -45,29 +38,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity addOrder(List<Long> certificateIds, String username) {
-        UserEntity userEntity = userDao.findByUsername(username).orElseThrow(() -> new NoUserFoundException(username));
-        OrderEntity orderEntity = new OrderEntity();
-        List<CertificateEntity> certificateEntities = certificateIds
-                .stream()
-                .map(id -> certificateService.getById(id).orElse(null))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        orderEntity.setCertificateEntities(certificateEntities);
-        orderEntity.setPurchaseDate(LocalDateTime.now());
-        orderEntity.setSummary(certificateEntities
-                .stream()
-                .mapToDouble(CertificateEntity::getPrice)
-                .sum());
-        orderDao.create(orderEntity);
-        userEntity.addOrder(orderEntity);
-        userDao.save(userEntity);
+    public UserEntity addOrder(OrderCreateRequest orderCreateRequest) {
+        UserEntity userEntity = userDao
+                .findByUsername(orderCreateRequest.getUsername())
+                .orElseThrow(() -> new NoUserFoundException(orderCreateRequest.getUsername()));
+        orderService.addOrderForUser(orderCreateRequest.getCertificateIds(), userEntity);
         return userEntity;
-    }
-
-    @Override
-    public List<OrderEntity> getOrdersForUser(String username) {
-        Optional<UserEntity> user = userDao.findByUsername(username);
-        return user.orElseThrow(() -> new NoUserFoundException(username)).getOrderEntities();
     }
 }

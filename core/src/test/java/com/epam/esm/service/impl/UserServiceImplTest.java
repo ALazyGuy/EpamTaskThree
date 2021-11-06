@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.configuration.ServiceTestConfiguration;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.model.dto.CertificateCreateRequest;
+import com.epam.esm.model.dto.OrderCreateRequest;
 import com.epam.esm.model.dto.UserCreateRequest;
 import com.epam.esm.model.entity.UserEntity;
 import com.epam.esm.service.CertificateService;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ServiceTestConfiguration.class)
+@Transactional
 public class UserServiceImplTest {
 
     @Autowired
@@ -46,9 +49,12 @@ public class UserServiceImplTest {
         request.setTags(List.of());
         request.setName("CERT1");
         Long certId = certificateService.create(request).getId();
-        userService.addOrder(List.of(certId), "TEST2");
+        OrderCreateRequest orderCreateRequest = new OrderCreateRequest();
+        orderCreateRequest.setUsername("TEST2");
+        orderCreateRequest.setCertificateIds(List.of(certId));
+        userService.addOrder(orderCreateRequest);
         UserEntity user = userDao.findByUsername("TEST2").get();
-        assertEquals(certId, user.getOrderEntities().get(0));
+        assertEquals(1, user.getOrderEntities().size());
     }
 
 }
