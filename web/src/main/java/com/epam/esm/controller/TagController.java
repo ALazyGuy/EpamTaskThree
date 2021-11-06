@@ -41,7 +41,7 @@ public class TagController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagResponse> create(@Valid @RequestBody TagCreateRequest tagCreateRequest){
         TagEntity tagEntity = tagService.create(tagCreateRequest);
-        return ResponseEntity.ok(new TagResponse(tagEntity));
+        return ResponseEntity.status(201).body(new TagResponse(tagEntity));
     }
 
 }

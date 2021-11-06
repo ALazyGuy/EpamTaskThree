@@ -30,7 +30,7 @@ public class TagServiceImplTest {
     @Test
     public void getAllTest(){
         for(int d = 0; d < 10; d++){
-            tagDao.create(TagEntity.builder().name(String.format("Tag%d", d)).build());
+            tagDao.create(String.format("Tag%d", d));
         }
         assertEquals(10, tagService.getAll().size());
     }

@@ -8,6 +8,6 @@ import javax.validation.constraints.Pattern;
 @Data
 public class TagCreateRequest {
     @JsonProperty(required = true)
-    @Pattern(regexp = "(^[a-zA-Z0-9]{1,20}$)", message = "Invalid tag format")
+    @Pattern(regexp = "(^([a-zA-Z0-9]|\\s|_){1,20}$)", message = "Invalid tag format")
     private String name;
 }

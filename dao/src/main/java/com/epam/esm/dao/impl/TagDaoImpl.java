@@ -23,22 +23,24 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public TagEntity createIfNotExists(String name){
-        int count = countByName(name);
-
-        if(count != 0) {
+        if(exists(name)) {
             return loadByName(name).get();
         }
 
-        TagEntity tagEntity = new TagEntity();
-        tagEntity.setName(name);
-        return create(tagEntity);
+        return create(name);
     }
 
     @Override
-    public TagEntity create(TagEntity tagEntity){
-        if(tagEntity.getId() != null){
-            throw new TagExistsException(tagEntity.getName());
+    public TagEntity create(String name){
+        if(exists(name)){
+            throw new TagExistsException(name);
         }
+
+        TagEntity tagEntity = TagEntity
+                .builder()
+                .name(name)
+                .build();
+
         this.entityManager.persist(tagEntity);
         return tagEntity;
     }
@@ -66,11 +68,13 @@ public class TagDaoImpl implements TagDao {
         return Optional.ofNullable(entityManager.find(TagEntity.class, id));
     }
 
-    private int countByName(String name){
+    @Override
+    public boolean exists(String name) {
         return entityManager
                 .createQuery("SELECT tag from TagEntity tag where tag.name = ?1")
                 .setParameter(1, name)
-                .getResultList().size();
+                .getResultStream()
+                .findFirst().isPresent();
     }
 
 }

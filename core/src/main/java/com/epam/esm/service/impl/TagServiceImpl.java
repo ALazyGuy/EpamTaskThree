@@ -26,6 +26,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagEntity create(TagCreateRequest tagCreateRequest) {
-        return tagDao.createIfNotExists(tagCreateRequest.getName());
+        return tagDao.create(tagCreateRequest.getName());
     }
+
+
 }
