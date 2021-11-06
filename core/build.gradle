@@ -18,7 +18,15 @@ dependencyManagement {
     }
 }
 
+configurations{
+    testOutput
+    mainOutput
+}
+
 dependencies {
+    testOutput sourceSets.test.output
+    mainOutput sourceSets.main.output
+
     implementation project(path: ":dao", configuration: "mainOutput")
     implementation 'mysql:mysql-connector-java:8.0.27'
     implementation 'org.projectlombok:lombok:1.18.20'
