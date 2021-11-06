@@ -23,8 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,6 +95,21 @@ public class TagControllerTest {
                 .andReturn();
         TagResponse actual = objectMapper.readValue(result.getResponse().getContentAsString(), TagResponse.class);
         assertEquals(request.getName(), actual.getName());
+    }
+
+    @Test
+    @SneakyThrows
+    public void deleteSuccessTest(){
+        Long id = tagDao.createIfNotExists("QWE").getId();
+        mockMvc.perform(delete(String.format("/v2/tag/%d", id)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    public void deleteFailTest(){
+        mockMvc.perform(delete(String.format("/v2/tag/100")))
+                .andExpect(status().isNotFound());
     }
 
 }
