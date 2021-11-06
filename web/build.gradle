@@ -27,10 +27,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.5.5'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0-rc2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0-rc2'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc2'
 }
