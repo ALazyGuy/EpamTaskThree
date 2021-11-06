@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -95,6 +96,25 @@ public class CertificateControllerTest {
                 .andReturn();
         CertificateResponse actual = objectMapper.readValue(result.getResponse().getContentAsString(), CertificateResponse.class);
         assertEquals(request.getName(), actual.getName());
+    }
+
+    @Test
+    @SneakyThrows
+    public void deleteSuccessTest(){
+        CertificateEntity certificateEntity = CertificateEntity
+                .builder()
+                .name("CERT4")
+                .build();
+        Long id = certificateDao.create(certificateEntity).getId();
+        mockMvc.perform(delete(String.format("/v2/certificate/%d", id)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    public void deleteFailTest(){
+        mockMvc.perform(delete(String.format("/v2/certificate/100")))
+                .andExpect(status().isNotFound());
     }
 
 }
