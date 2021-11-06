@@ -10,4 +10,5 @@ import java.util.Optional;
 @Service
 public interface OrderService {
     Optional<OrderEntity> addOrderForUser(List<Long> certIds, UserEntity userEntity);
+    List<OrderEntity> findOrdersByOwner(String username);
 }

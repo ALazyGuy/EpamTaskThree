@@ -58,4 +58,8 @@ public class OrderServiceImpl implements OrderService {
         return Optional.of(orderEntity);
     }
 
+    @Override
+    public List<OrderEntity> findOrdersByOwner(String username) {
+        return orderDao.loadByOwner(username);
+    }
 }
