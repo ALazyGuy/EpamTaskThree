@@ -13,6 +13,7 @@ public interface CertificateDao {
     Optional<CertificateEntity> loadById(Long id);
     Optional<CertificateEntity> loadByName(String name);
     boolean existsById(Long id);
+    boolean existsByName(String name);
     // List<Certificate> search(SQLQueryParamBuilder.SQLQueryParamState sqlQueryParamState);
     // Optional<Certificate> update(int id, SQLColumnListBuilder.SQLColumnListState state, List<Tag> tags);
     boolean delete(Long id);

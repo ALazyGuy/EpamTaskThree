@@ -72,4 +72,13 @@ public class CertificateDaoImpl implements CertificateDao {
         return Objects.nonNull(entityManager.find(CertificateEntity.class, id));
     }
 
+    @Override
+    public boolean existsByName(String name) {
+        return entityManager
+                .createQuery("SELECT cert FROM CertificateEntity cert WHERE cert.name = ?1")
+                .setParameter(1, name)
+                .getResultStream()
+                .findFirst()
+                .isPresent();
+    }
 }

@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.exception.CertificateExistsException;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.model.entity.TagEntity;
@@ -28,6 +29,10 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateEntity create(CertificateCreateRequest certificateCreateRequest) {
+        if(certificateDao.existsByName(certificateCreateRequest.getName())){
+            throw new CertificateExistsException(certificateCreateRequest.getName());
+        }
+
         CertificateEntity certificateEntity = CertificateEntity.builder()
                 .name(certificateCreateRequest.getName())
                 .description(certificateCreateRequest.getDescription())
