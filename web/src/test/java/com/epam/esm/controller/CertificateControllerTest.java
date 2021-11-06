@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -114,6 +114,32 @@ public class CertificateControllerTest {
     @SneakyThrows
     public void deleteFailTest(){
         mockMvc.perform(delete(String.format("/v2/certificate/100")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
+    public void getByIdSuccessTest(){
+        CertificateEntity entity = CertificateEntity
+                .builder()
+                .name("CERT5")
+                .description("DESC5")
+                .duration(55)
+                .price(50)
+                .build();
+        Long id = certificateDao.create(entity).getId();
+        CertificateResponse response = new CertificateResponse(entity);
+        mockMvc.perform(
+                get(String.format("/v2/certificate/%d", id))
+                        .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }
+
+    @Test
+    @SneakyThrows
+    public void getByIdFailTest(){
+        mockMvc.perform(get("/v2/certificate/100"))
                 .andExpect(status().isNotFound());
     }
 
