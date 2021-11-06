@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,14 @@ public class TagController {
     public ResponseEntity<TagResponse> create(@Valid @RequestBody TagCreateRequest tagCreateRequest){
         TagEntity tagEntity = tagService.create(tagCreateRequest);
         return ResponseEntity.status(201).body(new TagResponse(tagEntity));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id){
+        if(tagService.delete(id)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
