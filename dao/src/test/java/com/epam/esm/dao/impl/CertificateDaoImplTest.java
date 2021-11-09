@@ -82,20 +82,40 @@ public class CertificateDaoImplTest {
     }
 
     @Test
-    public void searchByDescriptionAndNameTest(){
-        CertificateEntity certificateEntity = new CertificateEntity();
-        certificateEntity.setName("Certificate2");
-        certificateEntity.setDescription("Description2");
-        CertificateEntity certificateEntity1 = new CertificateEntity();
-        certificateEntity1.setName("TestCertificate3");
-        certificateEntity1.setDescription("Description3");
-        CertificateEntity certificateEntity2 = new CertificateEntity();
-        certificateEntity2.setName("TestCertificate4");
-        certificateEntity2.setDescription("Description4");
+    public void searchTest(){
+        TagEntity tagEntity1 = TagEntity.builder().name("tag1").build();
+        TagEntity tagEntity2 = TagEntity.builder().name("tag2").build();
+        TagEntity tagEntity3 = TagEntity.builder().name("tag3").build();
+        entityManager.persist(tagEntity1);
+        entityManager.persist(tagEntity2);
+        entityManager.persist(tagEntity3);
+        CertificateEntity certificateEntity = CertificateEntity.builder()
+                .name("Certificate2")
+                .description("Description2")
+                .tagEntities(List.of(tagEntity1, tagEntity2, tagEntity3))
+                .build();
+        CertificateEntity certificateEntity1 = CertificateEntity.builder()
+                .name("TestCertificate3")
+                .description("Description3")
+                .tagEntities(List.of())
+                .build();
+        CertificateEntity certificateEntity2 = CertificateEntity
+                .builder()
+                .name("TestCertificate4")
+                .description("HeyDude")
+                .tagEntities(List.of(tagEntity1, tagEntity3))
+                .build();
+        CertificateEntity certificateEntity3 = CertificateEntity
+                .builder()
+                .name("TestCertificate5")
+                .description("HeyDude")
+                .tagEntities(List.of(tagEntity2, tagEntity3))
+                .build();
         entityManager.persist(certificateEntity);
         entityManager.persist(certificateEntity1);
         entityManager.persist(certificateEntity2);
-        List<CertificateEntity> actual = certificateDao.search(null, "Test", "4");
+        entityManager.persist(certificateEntity3);
+        List<CertificateEntity> actual = certificateDao.search(List.of("tag1", "tag3"), "Test", "ude");
         assertEquals(1, actual.size());
     }
 
