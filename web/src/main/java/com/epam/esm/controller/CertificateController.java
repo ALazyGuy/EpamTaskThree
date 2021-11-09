@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE, RequestMethod.GET})
 @RequestMapping("/v2/certificate")
@@ -27,6 +30,15 @@ public class CertificateController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CertificateResponse> create(@Valid @RequestBody CertificateCreateRequest certificateCreateRequest){
         CertificateResponse response = new CertificateResponse(certificateService.create(certificateCreateRequest));
+        response.add(linkTo(
+                methodOn(CertificateController.class)
+                        .delete(response.getId()))
+                .withRel("deleteCertificate"));
+
+        response.add(linkTo(
+                methodOn(CertificateController.class)
+                        .getById(response.getId()))
+                .withRel("getCertificateById"));
         return ResponseEntity.status(201).body(response);
     }
 
@@ -42,7 +54,17 @@ public class CertificateController {
     public ResponseEntity<CertificateResponse> getById(@PathVariable Long id){
         Optional<CertificateEntity> response = certificateService.getById(id);
         if(response.isPresent()){
-            return ResponseEntity.ok(response.map(CertificateResponse::new).get());
+            CertificateResponse certificateResponse = response.map(CertificateResponse::new).get();
+            certificateResponse.add(linkTo(
+                    methodOn(CertificateController.class)
+                            .delete(certificateResponse.getId()))
+                    .withRel("deleteCertificate"));
+
+            certificateResponse.add(linkTo(
+                    methodOn(CertificateController.class)
+                            .getById(certificateResponse.getId()))
+                    .withRel("getCertificateById"));
+            return ResponseEntity.ok(certificateResponse);
         }
         return ResponseEntity.notFound().build();
     }

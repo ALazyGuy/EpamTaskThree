@@ -3,12 +3,13 @@ package com.epam.esm.model.dto;
 import com.epam.esm.model.entity.CertificateEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class CertificateResponse {
+public class CertificateResponse extends RepresentationModel<CertificateResponse> {
     private Long id;
     private String name;
     private String description;
