@@ -5,6 +5,7 @@ import com.epam.esm.configuration.ServiceTestConfiguration;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.dto.TagCreateRequest;
 import com.epam.esm.model.dto.TagResponse;
+import com.epam.esm.model.entity.TagEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,9 +50,11 @@ public class TagControllerTest {
     public void getAllTest(){
         List<TagResponse> expected = new LinkedList<>();
         for(int d = 0; d < 10; d++){
-            expected.add(new TagResponse(
-                    tagDao.createIfNotExists(String.format("Tag%d", d))
-            ));
+            TagEntity tagEntity = tagDao.createIfNotExists(String.format("Tag%d", d));
+            TagResponse tagResponse = new TagResponse(tagEntity);
+            Link link = linkTo(methodOn(TagController.class).delete(tagResponse.getId())).withRel("deleteTag");
+            tagResponse.add(link);
+            expected.add(tagResponse);
         }
 
         String expectedResponse = objectMapper.writeValueAsString(expected);
