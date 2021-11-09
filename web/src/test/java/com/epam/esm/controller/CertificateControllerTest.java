@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,6 +119,7 @@ public class CertificateControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    //TODO Fix _links bug
     @Test
     @SneakyThrows
     public void getByIdSuccessTest(){
@@ -127,10 +130,19 @@ public class CertificateControllerTest {
                 .duration(55)
                 .price(50)
                 .build();
-        Long id = certificateDao.create(entity).getId();
+        certificateDao.create(entity);
         CertificateResponse response = new CertificateResponse(entity);
+        response.add(linkTo(
+                methodOn(CertificateController.class)
+                        .delete(response.getId()))
+                .withRel("deleteCertificate"));
+
+        response.add(linkTo(
+                methodOn(CertificateController.class)
+                        .getById(response.getId()))
+                .withRel("getCertificateById"));
         mockMvc.perform(
-                get(String.format("/v2/certificate/%d", id))
+                get(String.format("/v2/certificate/%d", entity.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(response)));
