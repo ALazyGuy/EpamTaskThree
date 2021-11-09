@@ -5,14 +5,17 @@ import com.epam.esm.model.dto.TagResponse;
 import com.epam.esm.model.entity.TagEntity;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
@@ -36,13 +39,21 @@ public class TagController {
         if(response.isEmpty()){
             return ResponseEntity.noContent().build();
         }
+
+        for(TagResponse tagResponse : response){
+            Link link = linkTo(methodOn(TagController.class).delete(tagResponse.getId())).withRel("deleteTag");
+            tagResponse.add(link);
+        }
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagResponse> create(@Valid @RequestBody TagCreateRequest tagCreateRequest){
-        TagEntity tagEntity = tagService.create(tagCreateRequest);
-        return ResponseEntity.status(201).body(new TagResponse(tagEntity));
+        TagResponse tagResponse = new TagResponse(tagService.create(tagCreateRequest));
+        Link link = linkTo(methodOn(TagController.class).delete(tagResponse.getId())).withRel("deleteTag");
+        tagResponse.add(link);
+        return ResponseEntity.status(201).body(tagResponse);
     }
 
     @DeleteMapping("/{id}")
