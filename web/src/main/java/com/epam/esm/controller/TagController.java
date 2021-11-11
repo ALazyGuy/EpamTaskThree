@@ -5,6 +5,7 @@ import com.epam.esm.model.dto.TagResponse;
 import com.epam.esm.model.entity.TagEntity;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class TagController {
     }
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TagResponse>> getAll(){
+    public ResponseEntity<CollectionModel<TagResponse>> getAll(){
         List<TagResponse> response = tagService
                 .getAll()
                 .stream()
@@ -45,7 +46,7 @@ public class TagController {
             tagResponse.add(link);
         }
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(CollectionModel.of(response));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

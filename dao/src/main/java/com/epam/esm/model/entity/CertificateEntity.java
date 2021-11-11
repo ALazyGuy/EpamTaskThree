@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "certificate")
 public class CertificateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +31,4 @@ public class CertificateEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<TagEntity> tagEntities = new LinkedList<>();
 
-    public void addTag(TagEntity tagEntity){
-        if(tagEntities.stream().noneMatch(t -> t.getId() == tagEntity.getId())){
-            this.tagEntities.add(tagEntity);
-        }
-    }
-
-    public void removeTag(TagEntity tagEntity){
-        this.tagEntities.remove(tagEntity);
-    }
 }

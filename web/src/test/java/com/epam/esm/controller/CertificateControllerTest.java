@@ -19,7 +19,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -119,7 +125,6 @@ public class CertificateControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    //TODO Fix _links bug
     @Test
     @SneakyThrows
     public void getByIdSuccessTest(){
@@ -145,7 +150,7 @@ public class CertificateControllerTest {
                 get(String.format("/v2/certificate/%d", entity.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+                .andExpect(content().json(getResourceAsString("getByIdResponse.json")));
     }
 
     @Test
@@ -153,6 +158,11 @@ public class CertificateControllerTest {
     public void getByIdFailTest(){
         mockMvc.perform(get("/v2/certificate/100"))
                 .andExpect(status().isNotFound());
+    }
+
+    @SneakyThrows
+    private String getResourceAsString(String file){
+        return new String(Files.readAllBytes(Path.of(CertificateControllerTest.class.getResource(file).toURI())));
     }
 
 }

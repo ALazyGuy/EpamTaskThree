@@ -2,6 +2,8 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.DaoTestConfiguration;
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.model.SearchParams;
+import com.epam.esm.model.SortingType;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.model.entity.TagEntity;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,18 +32,19 @@ public class CertificateDaoImplTest {
     private CertificateDao certificateDao;
 
     @Test
-    public void createTest(){
+    public void createTest() {
         CertificateEntity certificateEntity = new CertificateEntity();
         certificateEntity.setName("Certificate1");
         certificateDao.create(certificateEntity);
-        CertificateEntity certificateEntity1 = entityManager.createQuery("SELECT cert FROM CertificateEntity cert WHERE cert.name = ?1", CertificateEntity.class)
-                .setParameter(1, "Certificate1")
-                .getSingleResult();
+        CertificateEntity certificateEntity1 =
+                entityManager.createQuery("SELECT cert FROM CertificateEntity cert WHERE cert.name = ?1", CertificateEntity.class)
+                        .setParameter(1, "Certificate1")
+                        .getSingleResult();
         assertNotNull(certificateEntity1);
     }
 
     @Test
-    public void loadByNameTest(){
+    public void loadByNameTest() {
         CertificateEntity certificateEntity = new CertificateEntity();
         certificateEntity.setName("Certificate1");
         entityManager.persist(certificateEntity);
@@ -50,7 +54,7 @@ public class CertificateDaoImplTest {
     }
 
     @Test
-    public void loadByIdTest(){
+    public void loadByIdTest() {
         CertificateEntity certificateEntity = new CertificateEntity();
         certificateEntity.setName("Certificate1");
         entityManager.persist(certificateEntity);
@@ -60,8 +64,8 @@ public class CertificateDaoImplTest {
     }
 
     @Test
-    public void loadAllTest(){
-        for(int d = 0; d < 10; d++){
+    public void loadAllTest() {
+        for (int d = 0; d < 10; d++) {
             CertificateEntity certificateEntity = new CertificateEntity();
             certificateEntity.setName(Integer.toString(d));
             certificateDao.create(certificateEntity);
@@ -72,7 +76,7 @@ public class CertificateDaoImplTest {
     }
 
     @Test
-    public void deleteTest(){
+    public void deleteTest() {
         CertificateEntity certificateEntity = new CertificateEntity();
         certificateEntity.setName("Certificate1");
         entityManager.persist(certificateEntity);
@@ -82,7 +86,7 @@ public class CertificateDaoImplTest {
     }
 
     @Test
-    public void searchTest(){
+    public void searchTest() {
         TagEntity tagEntity1 = TagEntity.builder().name("tag1").build();
         TagEntity tagEntity2 = TagEntity.builder().name("tag2").build();
         TagEntity tagEntity3 = TagEntity.builder().name("tag3").build();
@@ -111,12 +115,29 @@ public class CertificateDaoImplTest {
                 .description("HeyDude")
                 .tagEntities(List.of(tagEntity2, tagEntity3))
                 .build();
+        CertificateEntity certificateEntity4 = CertificateEntity
+                .builder()
+                .name("TestCertificate6")
+                .description("HeyDude")
+                .tagEntities(List.of(tagEntity1, tagEntity3))
+                .build();
         entityManager.persist(certificateEntity);
         entityManager.persist(certificateEntity1);
         entityManager.persist(certificateEntity2);
         entityManager.persist(certificateEntity3);
-        List<CertificateEntity> actual = certificateDao.search(List.of("tag1", "tag3"), "Test", "ude");
-        assertEquals(1, actual.size());
+        entityManager.persist(certificateEntity4);
+
+        SearchParams searchParams = SearchParams
+                .builder()
+                .name("Test")
+                .description("Hey")
+                .tags(Set.of("tag1", "tag3"))
+                .sortingType(SortingType.DESC)
+                .orderBy("name")
+                .build();
+        List<CertificateEntity> actual = certificateDao.search(searchParams);
+        assertEquals(2, actual.size());
+        assertEquals(certificateEntity4, actual.get(0));
     }
 
 }

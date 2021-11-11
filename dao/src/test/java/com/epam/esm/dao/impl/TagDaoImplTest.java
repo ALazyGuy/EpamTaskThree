@@ -63,9 +63,9 @@ public class TagDaoImplTest {
         TagEntity expected = new TagEntity();
         expected.setName("TEST");
         entityManager.persist(expected);
-        Optional<TagEntity> actual = tagDao.loadById(1L);
+        Optional<TagEntity> actual = tagDao.loadById(expected.getId());
         assertTrue(actual.isPresent());
-        assertEquals(1, actual.get().getId());
+        assertEquals(expected.getId(), actual.get().getId());
     }
 
     @Test
@@ -73,8 +73,8 @@ public class TagDaoImplTest {
         TagEntity expected = new TagEntity();
         expected.setName("TEST");
         entityManager.persist(expected);
-        tagDao.delete(1L);
-        Optional<TagEntity> actual = tagDao.loadById(1L);
+        tagDao.delete(expected.getId());
+        Optional<TagEntity> actual = tagDao.loadById(expected.getId());
         assertTrue(actual.isEmpty());
     }
 

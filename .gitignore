@@ -1,2 +1,5 @@
 .idea/
 .gradle/
+core/build/
+dao/build/
+web/build/

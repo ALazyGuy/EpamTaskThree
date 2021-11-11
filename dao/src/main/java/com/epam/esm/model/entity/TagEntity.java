@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "tag")
 public class TagEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
