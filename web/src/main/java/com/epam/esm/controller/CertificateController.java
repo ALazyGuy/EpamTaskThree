@@ -1,16 +1,22 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.SearchParams;
+import com.epam.esm.model.SortingType;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.dto.CertificateResponse;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -67,6 +73,48 @@ public class CertificateController {
             return ResponseEntity.ok(certificateResponse);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<CertificateResponse>> search(
+            @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(required = false, defaultValue = "") String description,
+            @RequestParam(required = false, defaultValue = "") String orderBy,
+            @RequestParam(required = false, defaultValue = "NONE") SortingType sortingType,
+            @RequestParam(required = false, defaultValue = "") Set<String> tags,
+            @RequestParam(required = false, defaultValue = "") int offset,
+            @RequestParam(required = false, defaultValue = "") int limit
+    ){
+        SearchParams searchParams = SearchParams.builder()
+                .name(name)
+                .description(description)
+                .orderBy(orderBy)
+                .sortingType(sortingType)
+                .offset(offset)
+                .limit(limit)
+                .tags(tags)
+                .build();
+        List<CertificateEntity> certificateEntities = certificateService.search(searchParams);
+        if(certificateEntities.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        List<CertificateResponse> response = certificateEntities
+                .stream()
+                .map(CertificateResponse::new)
+                .map(c -> {
+                    c.add(linkTo(
+                            methodOn(CertificateController.class)
+                                    .delete(c.getId()))
+                            .withRel("deleteCertificate"));
+
+                    c.add(linkTo(
+                            methodOn(CertificateController.class)
+                                    .getById(c.getId()))
+                            .withRel("getCertificateById"));
+                    return c;
+                }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(CollectionModel.of(response));
     }
 
 }

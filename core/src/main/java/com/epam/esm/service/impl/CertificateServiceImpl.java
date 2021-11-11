@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.exception.CertificateExistsException;
+import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.model.entity.TagEntity;
@@ -47,6 +48,11 @@ public class CertificateServiceImpl implements CertificateService {
                 .collect(Collectors.toList());
         certificateEntity.setTagEntities(tagEntities);
         return certificateDao.create(certificateEntity);
+    }
+
+    @Override
+    public List<CertificateEntity> search(SearchParams searchParams) {
+        return certificateDao.search(searchParams);
     }
 
     @Override
