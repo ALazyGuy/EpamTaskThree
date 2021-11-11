@@ -1,5 +1,5 @@
 {
-  "id": 1,
+  "id": ID,
   "name": "CERT5",
   "description": "DESC5",
   "price": 50.0,
@@ -8,10 +8,10 @@
   "lastUpdateDate": null,
   "_links": {
     "deleteCertificate": {
-      "href": "http://localhost/v2/certificate/1"
+      "href": "http://localhost/v2/certificate/ID"
     },
     "getCertificateById": {
-      "href": "http://localhost/v2/certificate/1"
+      "href": "http://localhost/v2/certificate/ID"
     }
   }
 }

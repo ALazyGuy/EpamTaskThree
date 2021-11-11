@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,24 +47,6 @@ public class TagControllerTest {
     private TagDao tagDao;
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Test
-    @SneakyThrows
-    public void getAllTest(){
-        List<TagResponse> expected = new LinkedList<>();
-        for(int d = 0; d < 10; d++){
-            TagEntity tagEntity = tagDao.createIfNotExists(String.format("Tag%d", d));
-            TagResponse tagResponse = new TagResponse(tagEntity);
-            Link link = linkTo(methodOn(TagController.class).delete(tagResponse.getId())).withRel("deleteTag");
-            tagResponse.add(link);
-            expected.add(tagResponse);
-        }
-
-        String expectedResponse = objectMapper.writeValueAsString(expected);
-        mockMvc.perform(get("/v2/tag/all"))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedResponse));
-    }
 
     @Test
     @SneakyThrows
@@ -116,6 +101,11 @@ public class TagControllerTest {
     public void deleteFailTest(){
         mockMvc.perform(delete(String.format("/v2/tag/100")))
                 .andExpect(status().isNotFound());
+    }
+
+    @SneakyThrows
+    private String getResourceAsString(String file){
+        return new String(Files.readAllBytes(Path.of(CertificateControllerTest.class.getResource(file).toURI())));
     }
 
 }

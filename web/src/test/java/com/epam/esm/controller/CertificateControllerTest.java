@@ -136,21 +136,13 @@ public class CertificateControllerTest {
                 .price(50)
                 .build();
         certificateDao.create(entity);
-        CertificateResponse response = new CertificateResponse(entity);
-        response.add(linkTo(
-                methodOn(CertificateController.class)
-                        .delete(response.getId()))
-                .withRel("deleteCertificate"));
-
-        response.add(linkTo(
-                methodOn(CertificateController.class)
-                        .getById(response.getId()))
-                .withRel("getCertificateById"));
+        String json = getResourceAsString("getByIdResponse.json");
+        json = json.replaceAll("ID", Long.toString(entity.getId()));
         mockMvc.perform(
                 get(String.format("/v2/certificate/%d", entity.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
-                .andExpect(content().json(getResourceAsString("getByIdResponse.json")));
+                .andExpect(content().json(json));
     }
 
     @Test
