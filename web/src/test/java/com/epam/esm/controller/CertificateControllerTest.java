@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.configuration.ServiceTestConfiguration;
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.dto.CertificateResponse;
 import com.epam.esm.model.entity.CertificateEntity;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -136,13 +138,11 @@ public class CertificateControllerTest {
                 .price(50)
                 .build();
         certificateDao.create(entity);
-        String json = getResourceAsString("getByIdResponse.json");
-        json = json.replaceAll("ID", Long.toString(entity.getId()));
         mockMvc.perform(
                 get(String.format("/v2/certificate/%d", entity.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
-                .andExpect(content().json(json));
+                .andExpect(content().json(getResourceAsString("getByIdResponse.json")));
     }
 
     @Test
@@ -150,6 +150,28 @@ public class CertificateControllerTest {
     public void getByIdFailTest(){
         mockMvc.perform(get("/v2/certificate/100"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
+    public void searchSuccessTest(){
+        CertificateEntity entity = CertificateEntity
+                .builder()
+                .name("CERT10")
+                .description("DESC10")
+                .duration(155)
+                .price(150)
+                .build();
+        certificateDao.create(entity);
+        mockMvc.perform(get("/v2/certificate/search?name=ERT10"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    public void searchNoneTest(){
+        mockMvc.perform(get("/v2/certificate/search?name=ERT10?tags=QWEQWEWQDWQ"))
+                .andExpect(status().isNoContent());
     }
 
     @SneakyThrows

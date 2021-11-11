@@ -82,8 +82,8 @@ public class CertificateController {
             @RequestParam(required = false, defaultValue = "") String orderBy,
             @RequestParam(required = false, defaultValue = "NONE") SortingType sortingType,
             @RequestParam(required = false, defaultValue = "") Set<String> tags,
-            @RequestParam(required = false, defaultValue = "") int offset,
-            @RequestParam(required = false, defaultValue = "") int limit
+            @RequestParam(required = false, defaultValue = "0") int offset,
+            @RequestParam(required = false, defaultValue = "10") int limit
     ){
         SearchParams searchParams = SearchParams.builder()
                 .name(name)
