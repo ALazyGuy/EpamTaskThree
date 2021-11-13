@@ -1,0 +1,15 @@
+{
+  "summary": 0.0,
+  "certificates": [
+    {
+      "name": "SOME_CERT",
+      "description": null,
+      "price": 0.0,
+      "duration": 0,
+      "createDate": null,
+      "lastUpdateDate": null,
+      "tags": []
+    }
+  ],
+  "owner": "USER2"
+}
