@@ -1,6 +1,7 @@
 package com.epam.esm.handler;
 
 import com.epam.esm.exception.CertificateExistsException;
+import com.epam.esm.exception.OrderNotExistException;
 import com.epam.esm.exception.TagExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity notValidDto(BindingResult bindingResult) {
         return ResponseEntity.badRequest().body(bindingResult.getFieldError().getDefaultMessage());
+    }
+
+    @ExceptionHandler({OrderNotExistException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity notFound(){
+        return ResponseEntity.notFound().build();
     }
 
 }

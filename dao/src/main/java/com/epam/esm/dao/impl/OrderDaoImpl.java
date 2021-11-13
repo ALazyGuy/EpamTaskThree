@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
@@ -36,5 +37,10 @@ public class OrderDaoImpl implements OrderDao {
                 .createQuery("SELECT ord FROM OrderEntity ord WHERE ord.owner.username = ?1")
                 .setParameter(1, username)
                 .getResultList();
+    }
+
+    @Override
+    public Optional<OrderEntity> getById(Long id) {
+        return Optional.ofNullable(entityManager.find(OrderEntity.class, id));
     }
 }

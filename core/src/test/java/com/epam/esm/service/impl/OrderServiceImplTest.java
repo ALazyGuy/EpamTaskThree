@@ -1,9 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.configuration.ServiceTestConfiguration;
-import com.epam.esm.model.dto.CertificateCreateRequest;
-import com.epam.esm.model.dto.OrderCreateRequest;
-import com.epam.esm.model.dto.UserCreateRequest;
+import com.epam.esm.model.dto.*;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.model.entity.OrderEntity;
 import com.epam.esm.service.CertificateService;
@@ -59,7 +57,7 @@ public class OrderServiceImplTest {
             requests.add(orderCreateRequest);
         }
         requests.forEach(userService::addOrder);
-        List<OrderEntity> actual = orderService.findOrdersByOwner("Test");
+        List<OrderResponse> actual = orderService.findOrdersByOwner("Test");
         assertEquals(8, actual.size());
     }
 

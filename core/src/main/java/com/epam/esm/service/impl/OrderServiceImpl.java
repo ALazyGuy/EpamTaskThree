@@ -2,6 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.OrderDao;
+import com.epam.esm.exception.OrderNotExistException;
+import com.epam.esm.model.dto.OrderDetails;
+import com.epam.esm.model.dto.OrderResponse;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.model.entity.OrderEntity;
 import com.epam.esm.model.entity.UserEntity;
@@ -59,7 +62,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderEntity> findOrdersByOwner(String username) {
-        return orderDao.loadByOwner(username);
+    public List<OrderResponse> findOrdersByOwner(String username) {
+        return orderDao.loadByOwner(username)
+                .stream()
+                .map(OrderResponse::new)
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public OrderDetails getOrderDetails(Long id) {
+        OrderEntity order = orderDao.getById(id).orElseThrow(() -> new OrderNotExistException(id));
+        return new OrderDetails(order);
+    }
+
 }
