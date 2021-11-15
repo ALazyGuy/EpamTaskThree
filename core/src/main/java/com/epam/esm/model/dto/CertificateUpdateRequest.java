@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CertificateUpdateRequest {
-    private String name;
-    private String description;
-    private double price;
+    private String name = "";
+    private String description = "";
+    private double price = 0;
 }

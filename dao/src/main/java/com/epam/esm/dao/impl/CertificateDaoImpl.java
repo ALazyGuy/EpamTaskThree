@@ -19,6 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -156,6 +157,11 @@ public class CertificateDaoImpl implements CertificateDao {
         if(price != 0){
             certificateEntity.setPrice(price);
         }
+
+        if(price != 0 && !name.isBlank() && !description.isBlank()){
+            certificateEntity.setLastUpdateDate(LocalDateTime.now());
+        }
+
         return Optional.of(certificateEntity);
     }
 

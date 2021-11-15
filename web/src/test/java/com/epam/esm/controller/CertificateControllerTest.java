@@ -5,6 +5,7 @@ import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.dto.CertificateResponse;
+import com.epam.esm.model.dto.CertificateUpdateRequest;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -172,6 +173,38 @@ public class CertificateControllerTest {
     public void searchNoneTest(){
         mockMvc.perform(get("/v2/certificate/search?name=ERT10?tags=QWEQWEWQDWQ"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @SneakyThrows
+    public void updateFailTest(){
+        CertificateUpdateRequest certificateUpdateRequest = new CertificateUpdateRequest();
+        certificateUpdateRequest.setDescription("DESK");
+        certificateUpdateRequest.setPrice(400);
+        String requestJson = objectMapper.writeValueAsString(certificateUpdateRequest);
+        mockMvc.perform(patch("/v2/certificate/200")
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
+    public void updateSuccessTest(){
+        CertificateEntity certificateEntity = CertificateEntity
+                                .builder()
+                                .name("cert")
+                                .build();
+        certificateDao.create(certificateEntity);
+        CertificateUpdateRequest certificateUpdateRequest = new CertificateUpdateRequest();
+        certificateUpdateRequest.setDescription("DESK");
+        certificateUpdateRequest.setPrice(400);
+        String requestJson = objectMapper.writeValueAsString(certificateUpdateRequest);
+        mockMvc.perform(patch(String.format("/v2/certificate/%d", certificateEntity.getId()))
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResourceAsString("updateSuccess.json")));
     }
 
     @SneakyThrows
