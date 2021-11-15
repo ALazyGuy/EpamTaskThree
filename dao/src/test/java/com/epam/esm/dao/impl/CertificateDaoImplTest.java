@@ -140,5 +140,22 @@ public class CertificateDaoImplTest {
         assertEquals(certificateEntity4, actual.get(0));
     }
 
+    @Test
+    public void updateSuccessTest(){
+        CertificateEntity certificateEntity = new CertificateEntity();
+        certificateEntity.setName("Certificate15");
+        entityManager.persist(certificateEntity);
+        certificateDao.update(certificateEntity.getId(), "", "DESK", 100);
+        CertificateEntity actual = entityManager.find(CertificateEntity.class, certificateEntity.getId());
+        assertEquals(certificateEntity.getDescription(), actual.getDescription());
+        assertEquals(certificateEntity.getPrice(), actual.getPrice());
+    }
+
+    @Test
+    public void updateFailTest(){
+        Optional<CertificateEntity> actual = certificateDao.update(300L, "", "DESK", 100);
+        assertTrue(actual.isEmpty());
+    }
+
 }
 
