@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(bindingResult.getFieldError().getDefaultMessage());
     }
 
-    @ExceptionHandler({OrderNotExistException.class, NoUserFoundException.class})
+    @ExceptionHandler({OrderNotExistException.class, NoUserFoundException.class, CertificateNotExistException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity notFound(){
         return ResponseEntity.notFound().build();

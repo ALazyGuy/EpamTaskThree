@@ -1,4 +1,4 @@
-package com.epam.esm;
+package com.epam.esm.mapper;
 
 import com.epam.esm.model.Pageable;
 import lombok.AccessLevel;

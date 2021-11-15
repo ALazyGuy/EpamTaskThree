@@ -1,21 +1,20 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.PageableMapper;
+import com.epam.esm.mapper.PageableMapper;
 import com.epam.esm.model.Pageable;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.SortingType;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.dto.CertificateResponse;
+import com.epam.esm.model.dto.CertificateUpdateRequest;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE, RequestMethod.GET})
+@CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE, RequestMethod.GET, RequestMethod.PATCH})
 @RequestMapping("/v2/certificate")
 public class CertificateController {
 
@@ -97,7 +96,6 @@ public class CertificateController {
                 .tags(tags)
                 .build();
         Pageable<CertificateEntity> searchResults = certificateService.search(searchParams);
-
         Pageable<CertificateResponse> response = PageableMapper.map(searchResults, CertificateResponse::new);
 
         if(response.getElements().isEmpty()){
@@ -118,6 +116,21 @@ public class CertificateController {
                     return c;
                 }).collect(Collectors.toList()));
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CertificateResponse> update(@PathVariable Long id, @Valid @RequestBody CertificateUpdateRequest certificateUpdateRequest){
+        CertificateResponse response = new CertificateResponse(certificateService.update(id, certificateUpdateRequest));
+        response.add(linkTo(
+                methodOn(CertificateController.class)
+                        .delete(response.getId()))
+                .withRel("deleteCertificate"));
+
+        response.add(linkTo(
+                methodOn(CertificateController.class)
+                        .getById(response.getId()))
+                .withRel("getCertificateById"));
         return ResponseEntity.ok(response);
     }
 
