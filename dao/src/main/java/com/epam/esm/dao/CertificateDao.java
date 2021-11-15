@@ -16,7 +16,7 @@ public interface CertificateDao {
     Optional<CertificateEntity> loadByName(String name);
     boolean existsById(Long id);
     boolean existsByName(String name);
-     Pageable<CertificateEntity> search(SearchParams searchParams);
-    // Optional<Certificate> update(int id, SQLColumnListBuilder.SQLColumnListState state, List<Tag> tags);
+    Pageable<CertificateEntity> search(SearchParams searchParams);
+    Optional<CertificateEntity> update(Long id, String name, String description, double price);
     boolean delete(Long id);
 }

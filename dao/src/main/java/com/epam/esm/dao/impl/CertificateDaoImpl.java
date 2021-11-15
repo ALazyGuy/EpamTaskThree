@@ -141,6 +141,24 @@ public class CertificateDaoImpl implements CertificateDao {
         return result;
     }
 
+    @Override
+    public Optional<CertificateEntity> update(Long id, String name, String description, double price) {
+        CertificateEntity certificateEntity = entityManager.find(CertificateEntity.class, id);
+        if(certificateEntity == null){
+            return Optional.empty();
+        }
+        if(!name.isBlank()){
+            certificateEntity.setName(name);
+        }
+        if(!description.isBlank()){
+            certificateEntity.setDescription(description);
+        }
+        if(price != 0){
+            certificateEntity.setPrice(price);
+        }
+        return Optional.of(certificateEntity);
+    }
+
     private Predicate getTextPredicate(String name, String description, CriteriaBuilder builder, Root<CertificateEntity> root) {
         if (!name.isBlank() || !description.isBlank()) {
             final Predicate namePredicate = name.isBlank() ? builder.conjunction() : builder.like(root.get("name"), String.format("%%%s%%", name));
