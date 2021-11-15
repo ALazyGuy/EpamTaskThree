@@ -135,7 +135,7 @@ public class CertificateDaoImplTest {
                 .sortingType(SortingType.DESC)
                 .orderBy("name")
                 .build();
-        List<CertificateEntity> actual = certificateDao.search(searchParams);
+        List<CertificateEntity> actual = certificateDao.search(searchParams).getElements();
         assertEquals(2, actual.size());
         assertEquals(certificateEntity4, actual.get(0));
     }

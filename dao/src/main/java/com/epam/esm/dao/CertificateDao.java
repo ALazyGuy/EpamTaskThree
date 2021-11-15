@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.model.Pageable;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.entity.CertificateEntity;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,7 @@ public interface CertificateDao {
     Optional<CertificateEntity> loadByName(String name);
     boolean existsById(Long id);
     boolean existsByName(String name);
-     List<CertificateEntity> search(SearchParams searchParams);
+     Pageable<CertificateEntity> search(SearchParams searchParams);
     // Optional<Certificate> update(int id, SQLColumnListBuilder.SQLColumnListState state, List<Tag> tags);
     boolean delete(Long id);
 }

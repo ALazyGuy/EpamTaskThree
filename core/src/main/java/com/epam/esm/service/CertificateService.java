@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.Pageable;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.dto.CertificateCreateRequest;
 import com.epam.esm.model.entity.CertificateEntity;
@@ -14,5 +15,5 @@ public interface CertificateService {
     boolean delete(Long id);
     Optional<CertificateEntity> getById(Long id);
     List<CertificateEntity> getAllCertificates();
-    List<CertificateEntity> search(SearchParams searchParams);
+    Pageable<CertificateEntity> search(SearchParams searchParams);
 }

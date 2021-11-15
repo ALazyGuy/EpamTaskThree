@@ -1,5 +1,7 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.PageableMapper;
+import com.epam.esm.model.Pageable;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.SortingType;
 import com.epam.esm.model.dto.CertificateCreateRequest;
@@ -76,7 +78,7 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionModel<CertificateResponse>> search(
+    public ResponseEntity<Pageable<CertificateResponse>> search(
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String description,
             @RequestParam(required = false, defaultValue = "") String orderBy,
@@ -94,13 +96,15 @@ public class CertificateController {
                 .limit(limit)
                 .tags(tags)
                 .build();
-        List<CertificateEntity> certificateEntities = certificateService.search(searchParams);
-        if(certificateEntities.isEmpty()){
+        Pageable<CertificateEntity> searchResults = certificateService.search(searchParams);
+
+        Pageable<CertificateResponse> response = PageableMapper.map(searchResults, CertificateResponse::new);
+
+        if(response.getElements().isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        List<CertificateResponse> response = certificateEntities
+        response.setElements(response.getElements()
                 .stream()
-                .map(CertificateResponse::new)
                 .map(c -> {
                     c.add(linkTo(
                             methodOn(CertificateController.class)
@@ -112,9 +116,9 @@ public class CertificateController {
                                     .getById(c.getId()))
                             .withRel("getCertificateById"));
                     return c;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList()));
 
-        return ResponseEntity.ok(CollectionModel.of(response));
+        return ResponseEntity.ok(response);
     }
 
 }

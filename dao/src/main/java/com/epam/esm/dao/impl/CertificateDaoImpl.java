@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.model.Pageable;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.SortingType;
 import com.epam.esm.model.entity.CertificateEntity;
@@ -96,15 +97,25 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<CertificateEntity> search(SearchParams searchParams) {
+    public Pageable<CertificateEntity> search(SearchParams searchParams) {
 
         final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+
         final CriteriaQuery<CertificateEntity> query = builder.createQuery(CertificateEntity.class);
         final Root<CertificateEntity> root = query.from(CertificateEntity.class);
+        final Root<CertificateEntity> countRoot = countQuery.from(CertificateEntity.class);
+
+        countQuery.select(builder.count(countRoot));
         query.select(root);
 
         final Predicate tags = getTagsPredicate(searchParams.getTags(), builder, root);
         final Predicate text = getTextPredicate(searchParams.getName(), searchParams.getDescription(), builder, root);
+
+        final Predicate countTags = getTagsPredicate(searchParams.getTags(), builder, countRoot);
+        final Predicate countText = getTextPredicate(searchParams.getName(), searchParams.getDescription(), builder, countRoot);
+
+        countQuery.where(builder.and(countText, countTags));
         query.where(builder.and(text, tags));
 
         if(searchParams.getSortingType() != SortingType.NONE){
@@ -114,10 +125,20 @@ public class CertificateDaoImpl implements CertificateDao {
         }
 
         final TypedQuery<CertificateEntity> finalQuery = entityManager.createQuery(query);
-        return finalQuery
+        final TypedQuery<Long> finalCountQuery = entityManager.createQuery(countQuery);
+
+        final Long pages = (long)Math.ceil((double)finalCountQuery.getSingleResult() / (double)searchParams.getLimit());
+
+        List<CertificateEntity> resultList = finalQuery
                 .setFirstResult(searchParams.getOffset())
                 .setMaxResults(searchParams.getLimit())
                 .getResultList();
+
+        Pageable<CertificateEntity> result = new Pageable<>();
+        result.setElements(resultList);
+        result.setPagesCount(pages);
+        result.setPageNumber((long)Math.ceil((double)searchParams.getOffset() / (double)searchParams.getLimit()));
+        return result;
     }
 
     private Predicate getTextPredicate(String name, String description, CriteriaBuilder builder, Root<CertificateEntity> root) {
