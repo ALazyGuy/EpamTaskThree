@@ -2,7 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.configuration.ServiceTestConfiguration;
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.exception.CertificateNotExistException;
 import com.epam.esm.model.dto.CertificateCreateRequest;
+import com.epam.esm.model.dto.CertificateUpdateRequest;
 import com.epam.esm.model.entity.CertificateEntity;
 import com.epam.esm.service.CertificateService;
 import org.junit.jupiter.api.Test;
@@ -15,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ServiceTestConfiguration.class)
@@ -68,6 +69,29 @@ public class CertificateServiceImplTest {
         certificateDao.create(expected);
         CertificateEntity actual = certificateService.getById(expected.getId()).get();
         assertEquals(expected.getId(), actual.getId());
+    }
+
+    @Test
+    public void updateFailTest(){
+        CertificateUpdateRequest certificateUpdateRequest = new CertificateUpdateRequest();
+        certificateUpdateRequest.setName("");
+        certificateUpdateRequest.setDescription("");
+        certificateUpdateRequest.setPrice(100);
+        assertThrows(CertificateNotExistException.class, () -> certificateService.update(200L, certificateUpdateRequest));
+    }
+
+    @Test
+    public void updateSuccessTest(){
+        CertificateEntity expected = new CertificateEntity();
+        certificateDao.create(expected);
+        CertificateUpdateRequest certificateUpdateRequest = new CertificateUpdateRequest();
+        certificateUpdateRequest.setName("");
+        certificateUpdateRequest.setDescription("TEST");
+        certificateUpdateRequest.setPrice(300);
+        certificateService.update(expected.getId(), certificateUpdateRequest);
+        CertificateEntity certificateEntity = certificateDao.loadById(expected.getId()).get();
+        assertEquals("TEST", certificateEntity.getDescription());
+        assertEquals(300, certificateEntity.getPrice());
     }
 
 }
