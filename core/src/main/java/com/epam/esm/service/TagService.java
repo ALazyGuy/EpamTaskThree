@@ -6,10 +6,12 @@ import com.epam.esm.model.entity.TagEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface TagService {
     List<TagEntity> getAll();
     TagEntity create(TagCreateRequest tagCreateRequest);
     boolean delete(Long id);
+    Optional<TagEntity> getMostPopularTag();
 }

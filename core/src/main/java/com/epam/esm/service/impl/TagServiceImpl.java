@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,5 +35,10 @@ public class TagServiceImpl implements TagService {
     @Override
     public boolean delete(Long id) {
         return tagDao.delete(id);
+    }
+
+    @Override
+    public Optional<TagEntity> getMostPopularTag() {
+        return tagDao.findMostPopularTag();
     }
 }
