@@ -1,5 +1,5 @@
 .idea/
 .gradle/
-core/build/
+service/build/
 dao/build/
 web/build/

@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(path: ":core", configuration: "mainOutput")
+    implementation project(path: ":service", configuration: "mainOutput")
     implementation project(path: ":dao", configuration: "mainOutput")
 
 
@@ -36,7 +36,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation project(path: ":core", configuration: "testOutput")
+    testImplementation project(path: ":service", configuration: "testOutput")
     testImplementation project(path: ":dao", configuration: "testOutput")
 
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
