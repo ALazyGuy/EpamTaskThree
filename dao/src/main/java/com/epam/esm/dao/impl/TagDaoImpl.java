@@ -77,4 +77,18 @@ public class TagDaoImpl implements TagDao {
                 .findFirst().isPresent();
     }
 
+    @Override
+    public Optional<TagEntity> findMostPopularTag() {
+        List<Object[]> results = entityManager.createNativeQuery("SELECT name, COUNT(id) as amount FROM tag JOIN certificate_tag_entities \n" +
+                "ON tag.id = certificate_tag_entities.tag_entities_id WHERE certificate_entity_id IN \n" +
+                "(SELECT certificate_entities_id FROM order_entity_certificate_entities JOIN order_entity \n" +
+                "ON order_entity.id = order_entity_certificate_entities.order_entity_id WHERE owner_id IN \n" +
+                "(SELECT * FROM (SELECT owner_id FROM order_entity GROUP BY owner_id ORDER BY SUM(summary) \n" +
+                "DESC LIMIT 1) AS t))GROUP BY id LIMIT 1")
+                .getResultList();
+        if(results.isEmpty()){
+            return Optional.empty();
+        }
+        return loadByName(results.get(0)[0].toString());
+    }
 }

@@ -15,4 +15,5 @@ public interface TagDao {
     TagEntity createIfNotExists(String name);
     boolean exists(String name);
     boolean delete(Long id);
+    Optional<TagEntity> findMostPopularTag();
 }
