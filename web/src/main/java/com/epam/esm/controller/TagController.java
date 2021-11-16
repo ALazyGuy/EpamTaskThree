@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -28,6 +29,19 @@ public class TagController {
     @Autowired
     public TagController(TagService tagService) {
         this.tagService = tagService;
+    }
+
+    @GetMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getPopular(){
+        Optional<TagEntity> mostPopularTag = tagService.getMostPopularTag();
+        if(mostPopularTag.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        TagResponse response = new TagResponse(mostPopularTag.get());
+        Link link = linkTo(methodOn(TagController.class).delete(response.getId())).withRel("deleteTag");
+        response.add(link);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
